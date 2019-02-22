@@ -32,3 +32,8 @@
     </div>
 </div>
     @endsection
+
+@section('footer')
+    <script src="{{url('')}}/js/fbtoken.js"></script>
+
+@endsection
