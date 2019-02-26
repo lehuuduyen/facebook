@@ -26,6 +26,9 @@ function baocao(id) {
 
 $(document).on('click', '._6a', function (e) {
     var id = $(this).find('a').attr('id');
+    console.log($(this).parent().parent())
+    console.log($(this).parent().parent().find('.fwb').find('a'))
+    console.log($(this).parent().parent().find('.fwb').find('a').attr('data-hovercard'))
     var is_check_append=$('div[data-ownerid=' + id + ']').find('li[data-duyen=true]').length;
    if(is_check_append == 0){
        setTimeout(function () {
