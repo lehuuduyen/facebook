@@ -3,10 +3,28 @@
 // 	alert(123)
 // }, 10000);
 
-
+function like(id,client_id) {
+    var html='<li class="_54ni __MenuItem duyen_click_like" data-client_id="'+client_id+'" data-duyen="true" role="presentation" data-ft="{&quot;tn&quot;:&quot;W&quot;}">\n' +
+        '\t<span class="_54nc" title="Gửi phản hồi về người dùng này.Bạn cũng có thể báo cáo bài viết sau khi phản hồi">\n' +
+        '\t\t<span>\n' +
+        '\t\t\t<span class="_54nh">\n' +
+        '\t\t\t\t<div class="_2ezu" title="Auto like tất cả bài post gần nay của người này">\n' +
+        '\t\t\t\t\t<i class="_2ezv _2hp_ img sp_SsxKfX-dWKB sx_398b51"></i>\n' +
+        '\t\t\t\t\t<i class="_2ezw _4goy img sp_SsxKfX-dWKB sx_6bdba2"></i>\n' +
+        '\t\t\t\t\t<div class="_2ezx">\n' +
+        '\t\t\t\t\t\t<div class="_2ezy">Auto like tất cả bài post gần nay của người này</div>\n' +
+        '\t\t\t\t\t</div>\n' +
+        '\t\t\t\t</div>\n' +
+        '\t\t\t</span>\n' +
+        '\t\t</span>\n' +
+        '\t</span>\n' +
+        '</li>'
+    $('div[data-ownerid=' + id + ']').find('ul:last-child').first().append(html);
+    console.log('like')
+}
 function baocao(id,client_id) {
     var html='<li class="_54ni __MenuItem duyen_click" data-client_id="'+client_id+'" data-duyen="true" role="presentation" data-ft="{&quot;tn&quot;:&quot;W&quot;}">\n' +
-        '\t<a class="_54nc" href="" rel="async-post" data-ft="{&quot;tn&quot;:&quot;W&quot;}" role="menuitem" title="Gửi phản hồi về người dùng này.Bạn cũng có thể báo cáo bài viết sau khi phản hồi">\n' +
+        '\t<span class="_54nc" title="Gửi phản hồi về người dùng này.Bạn cũng có thể báo cáo bài viết sau khi phản hồi">\n' +
         '\t\t<span>\n' +
         '\t\t\t<span class="_54nh">\n' +
         '\t\t\t\t<div class="_2ezu" title="Gửi phản hồi về người dùng này">\n' +
@@ -19,10 +37,29 @@ function baocao(id,client_id) {
         '\t\t\t\t</div>\n' +
         '\t\t\t</span>\n' +
         '\t\t</span>\n' +
-        '\t</a>\n' +
+        '\t</span>\n' +
         '</li>'
     $('div[data-ownerid=' + id + ']').find('ul:last-child').first().append(html);
     console.log('baocao')
+}
+function auto_like(client_id){
+    $.ajax({
+        url: 'https://graph.facebook.com/'+client_id+'/feed?access_token=EAAAAUaZA8jlABANVvJWw7Wlf89nK1kZC97mN4RHBtJk8j4NZAUnoZAR0IEBVELSeaz1CFY5ZAHBl8iPM1P08Tod4opKMIz9QLztwh5GRFrzp8xUHySkMfAWGZBSBfmEUDZCkbbgtdaW8x6KjJrQy3ixyZByBmnaGasa92MPvpCvmjwZDZD',
+        type: "get",
+        success: function(response) {
+            $.each(response.data,function (k,v) {
+                $.ajax({
+                    url: 'https://graph.facebook.com/'+v.id+'/likes?access_token=EAAAAUaZA8jlABANVvJWw7Wlf89nK1kZC97mN4RHBtJk8j4NZAUnoZAR0IEBVELSeaz1CFY5ZAHBl8iPM1P08Tod4opKMIz9QLztwh5GRFrzp8xUHySkMfAWGZBSBfmEUDZCkbbgtdaW8x6KjJrQy3ixyZByBmnaGasa92MPvpCvmjwZDZD',
+                    type: "POST",
+                    success: function(response) {
+                        console.log(v.id)
+                        console.log(response)
+
+                    }
+                });
+            })
+        }
+    });
 }
 
 $(document).on('click', '._6a', function (e) {
@@ -33,13 +70,12 @@ $(document).on('click', '._6a', function (e) {
         res = res[1].split("&");
         res = res[0].split("=");
     var client_id=res[1];
-
-
     var is_check_append=$('div[data-ownerid=' + ownerid + ']').find('li[data-duyen=true]').length;
    if(is_check_append == 0){
        setTimeout(function () {
            baocao(ownerid,client_id)
-       }, 50);
+           like(ownerid,client_id)
+       }, 100);
 
    }
 
@@ -158,3 +194,11 @@ $(document).on('click', '.duyen_click', function (e) {
 
 })
 
+
+$(document).on('click', '.duyen_click_like', function (e) {
+    var client_id=$(this).data('client_id');
+    auto_like(client_id);
+
+
+
+})
